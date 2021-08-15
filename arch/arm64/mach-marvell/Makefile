@@ -1,0 +1,1 @@
+obj-y			+= marvell.o

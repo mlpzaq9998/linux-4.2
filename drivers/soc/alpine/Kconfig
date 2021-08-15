@@ -1,0 +1,11 @@
+#
+# Alpine SoC drivers configuration
+#
+
+menuconfig AL_TDM_TEST_MODULE
+	tristate "AL TDM Test Module"
+	depends on ARCH_ALPINE
+    default n
+	help
+	  Alpine TDM Test Module
+

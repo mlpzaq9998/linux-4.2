@@ -1,0 +1,313 @@
+/*
+ * Copyright (C) 2016 Marvell Technology Group Ltd.
+ *
+ * This file is dual-licensed: you can use it either under the terms
+ * of the GPLv2 or the X11 license, at your option. Note that this dual
+ * licensing only applies to this file, and not this project as a
+ * whole.
+ *
+ *  a) This library is free software; you can redistribute it and/or
+ *     modify it under the terms of the GNU General Public License as
+ *     published by the Free Software Foundation; either version 2 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This library is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ * Or, alternatively,
+ *
+ *  b) Permission is hereby granted, free of charge, to any person
+ *     obtaining a copy of this software and associated documentation
+ *     files (the "Software"), to deal in the Software without
+ *     restriction, including without limitation the rights to use,
+ *     copy, modify, merge, publish, distribute, sublicense, and/or
+ *     sell copies of the Software, and to permit persons to whom the
+ *     Software is furnished to do so, subject to the following
+ *     conditions:
+ *
+ *     The above copyright notice and this permission notice shall be
+ *     included in all copies or substantial portions of the Software.
+ *
+ *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ *     OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+/*
+ * Device Tree file for Qnap TS1635A Armada 8040 NAS board platform
+ */
+
+#include "armada-8040.dtsi"
+
+/ {
+	model = "Qnap-TS1635A-v1.0-A8040";
+	compatible = "Qnap-TS1635A-8040", "marvell,armada8040",
+			"marvell,armada-ap806-quad", "marvell,armada-ap806";
+
+	memory@00000000 {
+		device_type = "memory";
+		reg = <0x0 0x0 0x0 0x80000000>;
+	};
+
+	ap806 {
+		config-space {
+			AP_UA0: serial@512000 {
+				status = "okay";
+			};
+			AP_UA1: serial@512100 {
+				status = "okay";
+			};
+                        AP_i2c0: i2c@511000 {
+                                clock-frequency = <100000>;
+                                pinctrl-names = "default";
+                                pinctrl-0 = <&ap_i2c0_pins>;
+                                status = "okay";
+                        };
+                        AP_spi0: spi@510600 {
+                                status = "okay";
+                                spi-flash@0 {
+                                        #address-cells = <0x1>;
+                                        #size-cells = <0x1>;
+                                        compatible = "jedec,spi-nor";
+                                        reg = <0x0>;
+                                        spi-max-frequency = <20000000>;
+                                        partition@0 {
+                                                label = "boot";
+                                                reg = <0x0 0x200000>;
+                                        };
+                                };
+                        };
+			/* make sure AP_XOR2 are all enabled
+			 * ap_xor0: dma_xor@400000
+                           ap_xor1: dma_xor@420000
+                           ap_xor2: dma_xor@440000
+                           ap_xor3: dma_xor@460000
+			 */
+		};
+	};
+
+	cpn-110-master {
+		config-space {
+/*
+			pinctrl@440000 {
+				xhci0_vbus_pins: xhci0-vbus-pins {
+					marvell,pins = "mpp33";
+					marvell,function = "gpio";
+				};
+			};
+			reg_usb3h0_vbus: usb3-vbus0 {
+				compatible = "regulator-fixed";
+				pinctrl-names = "default";
+				pinctrl-0 = <&xhci0_vbus_pins>;
+				regulator-name = "reg-usb3h0-vbus";
+				regulator-min-microvolt = <5000000>;
+				regulator-max-microvolt = <5000000>;
+				enable-active-high;
+				gpio = <&cpm_gpio1 15 GPIO_ACTIVE_HIGH>;
+				status = "okay";
+			};
+*/
+			comphy0: comphy {
+				status = "okay";
+			};
+                        CP0_SATA: sata@540000 {
+				status = "disabled";
+			};
+			CP0_UA0: serial@702000 {
+                                status = "okay";
+                        };
+			CP0_UA1: serial@702100 {
+                                status = "okay";
+                        };
+			CP0_i2c0: i2c@701000 {
+				clock-frequency = <100000>;
+				pinctrl-names = "default";
+				pinctrl-0 = <&cpm_i2c0_pins>;
+				status = "okay";
+			};
+			CP0_i2c1: i2c@701100 {
+				clock-frequency = <100000>;
+				pinctrl-names = "default";
+				pinctrl-0 = <&cpm_i2c1_pins>;
+				status = "okay";
+			};
+			sdhci@780000 {
+				/*vqmmc-supply = <&vccq_sdio_reg>;*/
+				bus-width = <4>;
+				/*no-1-8-v;
+				broken-cd;*/
+				pinctrl-names = "default";
+				pinctrl-0 = <&cpm_sdhci_pins>;
+				status = "okay";
+			};
+               CP0_SMI: mdio@12a200 { /* regular mdio */
+				#address-cells = <1>;
+				#size-cells = <0>;
+				CP0_mdio_phy2: ethernet-phy@2 {
+					reg = <0x1>;
+				};
+			};
+
+                        switch {
+                                compatible = "marvell,mvmdio-uio";
+                                status = "okay";
+                                mii-bus = <&CP0_SMI>;
+                        };
+
+			mdio@15b000 { /* xmdio */
+				#address-cells = <1>;
+				#size-cells = <0>;
+				/* no PHY connect, only SFP+ connector
+				CP0_xmdio_phy0: ethernet-phy@0 {
+                                        compatible = "ethernet-phy-ieee802.3-c45";
+                                        reg = <0>;
+				};*/
+			};
+			gop {
+                                CP0_emac0: mac0 {
+                                        phy-mode = "sfi"; /* SFI */
+					phys = <&comphy0 4 COMPHY_SFI>;
+					phy-names = "comphy";
+                                };
+                                CP0_emac2: mac2 {
+                                        phy-mode = "none"; /* disabled */
+                                };
+                                CP0_emac3: mac3 {
+                                        phy-mode = "rgmii"; /* rgmii-1 */
+                                        phy = <&CP0_mdio_phy2>;
+                                };
+			};
+			ppv22@000000 {
+				l4_chksum_jumbo_port = <0>;
+				pinctrl-names = "default";
+
+                                CP0_eth0: eth0@010000 {
+                                        status = "okay";
+                                };
+                                CP0_eth1: eth1@020000 {
+                                        status = "disabled";
+                                };
+                                CP0_eth2: eth2@030000 {
+                                        status = "okay";
+                                };
+			};
+
+			eip197@800000 {
+				status = "okay";
+			};
+			dma_xor@6a0000 {
+				status = "disabled";
+			};
+			dma_xor@6c0000 {
+				status = "disabled";
+			};
+		};
+		CP0_PEX0: pcie@0x600000 {
+			num-lanes = <4>;
+			status = "okay";
+		};
+		CP0_PEX1: pcie@0x620000 {
+			status = "disabled";
+		};
+		CP0_PEX2: pcie@0x640000 {
+			num-lanes = <1>;
+			status = "okay";
+		};
+	};
+
+	cpn-110-slave {
+		config-space {
+			comphy1: comphy {
+				status = "okay";
+			};
+			sata@540000 {
+				status = "okay";
+
+				sata-port@0 {
+					phys = <&comphy1 2 COMPHY_SATA0>;
+					phy-names = "comphy";
+					status = "okay";
+				};
+				sata-port@1 {
+					phys = <&comphy1 3 COMPHY_SATA1>;
+					phy-names = "comphy";
+					status = "okay";
+				};
+			};
+
+			CP1_SMI: mdio@12a200 { /* regular mdio */
+				#address-cells = <1>;
+				#size-cells = <0>;
+				CP1_mdio_phy1: ethernet-phy@1 {
+					reg = <0x0>;
+				};
+			};
+			mdio@15b000 { /* xmdio */
+				#address-cells = <1>;
+				#size-cells = <0>;
+				CP1_xmdio_phy0: ethernet-phy@0 {
+                                        compatible = "ethernet-phy-ieee802.3-c45";
+                                        reg = <0x1c>;
+				};
+			};
+
+			gop {
+				CP1_emac0: mac0 {
+					phy-mode = "sfi"; /* lane-4 - connect to X3310-A1 */
+					phys = <&comphy1 4 COMPHY_SFI>;
+					phy-names = "comphy";
+					phy = <&CP1_xmdio_phy0>;
+				};
+				CP1_emac2: mac2 {
+					phy-mode = "rgmii"; /* rgmii-1 mpp[13:12] [22:17] [27:30] */
+					phy = <&CP1_mdio_phy1>;
+				};
+				CP1_emac3: mac3 {
+					phy-mode = "none";
+				};
+			};
+			ppv22@000000 {
+				l4_chksum_jumbo_port = <0>;
+				pinctrl-names = "default";
+				pinctrl-0 = <&cps_ge1_rgmii_pins_1>;
+
+				CP1_eth0: eth0@010000 {
+					status = "okay";
+				};
+				CP1_eth1: eth1@020000 {
+					status = "okay";
+				};
+				CP1_eth2: eth2@030000 {
+					status = "disabled";
+				};
+			};
+			eip197@800000 {
+				status = "okay";
+			};
+			dma_xor@6a0000 {
+				status = "disabled";
+			};
+			dma_xor@6c0000 {
+				status = "disabled";
+			};
+		};
+		CP1_PEX0: pcie@0x600000 {
+			/*num-lanes = <2>;*/
+			status = "okay";
+		};
+		CP1_PEX1: pcie@0x620000 {
+			status = "disabled";
+		};
+		CP1_PEX2: pcie@0x640000 {
+			status = "okay";
+		};
+	};
+};
+

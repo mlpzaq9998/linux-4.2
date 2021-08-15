@@ -1,0 +1,80 @@
+#
+# SoC audio configuration
+#
+
+menuconfig SND_SOC
+	tristate "ALSA for SoC audio support"
+	select SND_PCM
+	select AC97_BUS if SND_SOC_AC97_BUS
+	select SND_JACK
+	select REGMAP_I2C if I2C
+	select REGMAP_SPI if SPI_MASTER
+	---help---
+
+	  If you want ASoC support, you should say Y here and also to the
+	  specific driver for your SoC platform below.
+	  
+	  ASoC provides power efficient ALSA support for embedded battery powered
+	  SoC based systems like PDA's, Phones and Personal Media Players.
+
+	  This ASoC audio support can also be built as a module.  If so, the module
+	  will be called snd-soc-core.
+
+if SND_SOC
+
+config SND_SOC_AC97_BUS
+	bool
+
+config SND_SOC_GENERIC_DMAENGINE_PCM
+	bool
+	select SND_DMAENGINE_PCM
+
+config SND_SOC_COMPRESS
+	bool
+	select SND_COMPRESS_OFFLOAD
+
+config SND_SOC_TOPOLOGY
+	bool
+
+# All the supported SoCs
+source "sound_intel/soc/adi/Kconfig"
+source "sound_intel/soc/amd/Kconfig"
+source "sound_intel/soc/atmel/Kconfig"
+source "sound_intel/soc/au1x/Kconfig"
+source "sound_intel/soc/bcm/Kconfig"
+source "sound_intel/soc/blackfin/Kconfig"
+source "sound_intel/soc/cirrus/Kconfig"
+source "sound_intel/soc/davinci/Kconfig"
+source "sound_intel/soc/dwc/Kconfig"
+source "sound_intel/soc/fsl/Kconfig"
+source "sound_intel/soc/jz4740/Kconfig"
+source "sound_intel/soc/nuc900/Kconfig"
+source "sound_intel/soc/omap/Kconfig"
+source "sound_intel/soc/kirkwood/Kconfig"
+source "sound_intel/soc/img/Kconfig"
+source "sound_intel/soc/intel/Kconfig"
+source "sound_intel/soc/mediatek/Kconfig"
+source "sound_intel/soc/mxs/Kconfig"
+source "sound_intel/soc/pxa/Kconfig"
+source "sound_intel/soc/qcom/Kconfig"
+source "sound_intel/soc/rockchip/Kconfig"
+source "sound_intel/soc/samsung/Kconfig"
+source "sound_intel/soc/sh/Kconfig"
+source "sound_intel/soc/sirf/Kconfig"
+source "sound_intel/soc/spear/Kconfig"
+source "sound_intel/soc/sti/Kconfig"
+source "sound_intel/soc/sunxi/Kconfig"
+source "sound_intel/soc/tegra/Kconfig"
+source "sound_intel/soc/txx9/Kconfig"
+source "sound_intel/soc/ux500/Kconfig"
+source "sound_intel/soc/xtensa/Kconfig"
+source "sound_intel/soc/zte/Kconfig"
+
+# Supported codecs
+source "sound_intel/soc/codecs/Kconfig"
+
+# generic frame-work
+source "sound_intel/soc/generic/Kconfig"
+
+endif	# SND_SOC
+

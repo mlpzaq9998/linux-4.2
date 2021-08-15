@@ -1,0 +1,21 @@
+config ISCSI_TARGET
+	tristate "Linux-iSCSI.org iSCSI Target Mode Stack"
+	depends on NET
+	select CRYPTO
+	select CRYPTO_CRC32C
+	select CRYPTO_CRC32C_INTEL if X86
+	help
+	Say M here to enable the ConfigFS enabled Linux-iSCSI.org iSCSI
+	Target Mode Stack.
+
+config ISCSI_ERROR_INJECTION
+	tristate "QNAP_ISCSI ERROR_INJECTION"
+	depends on ISCSI_TARGET
+	help
+	Say M here to enable QNAP ISCSI ERROR INJECTION feature
+
+config ISCSI_CMD_OVSLT_CNT
+	tristate "QNAP_ISCSI CMD_OVSLT_CNT"
+	depends on ISCSI_TARGET
+	help
+	Say M here to enable QNAP ISCSI COMMAND OVERSALT COUNT feature
