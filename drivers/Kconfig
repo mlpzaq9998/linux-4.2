@@ -90,7 +90,7 @@ source "drivers/video/Kconfig"
 
 source "sound/Kconfig"
 
-source "sound_intel/Kconfig"
+#source "sound_intel/Kconfig"
 
 source "drivers/hid/Kconfig"
 
