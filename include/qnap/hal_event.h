@@ -109,9 +109,12 @@ typedef enum
 // For THIN
     THIN_SB_BACKUP_FAIL = 160,
     THIN_IO_ERROR,
+    THIN_META_ERROR,
     THIN_ERR_VERSION_DETECT,        //for version-checking of dm-thin
     THIN_RECLAIM_NEEDED,
     THIN_RECLAIM_CLEARED,
+    THIN_SNAP_RESERVE_LOW,
+    THIN_SNAP_RESERVE_OK,
 // For VOLUME
     CHECK_FREE_SIZE = 180,
     CHECK_LAZY_INIT,
@@ -303,10 +306,10 @@ typedef struct
 	{
 		char mount_path[256];
 	}__attribute__((__packed__)) vol_remount_read_only;
-	struct __vol_message
+/*	struct __vol_message
 	{
 		char mount_path[256];
-	}__attribute__((__packed__)) vol_message;
+	}__attribute__((__packed__)) vol_message; */
         struct __tbt_virtual_nic
         {
             char tbt_virtual_nic_name[32];
@@ -331,14 +334,15 @@ typedef struct
         {
             char pool_name[32];
         } __attribute__ ((__packed__)) pool_message;
-        struct __vol_message
+/*        struct __vol_message
 	{
 		char device_name[32];
-	}__attribute__((__packed__)) vol_message;
+	}__attribute__((__packed__)) vol_message; */
         struct __oom_cb
         {
             unsigned int pid;
             char comm[32];
+            char QNAP_QPKG[64];
         } __attribute__ ((__packed__)) oom_cb;        
         struct __netlink_mem_cb
         {

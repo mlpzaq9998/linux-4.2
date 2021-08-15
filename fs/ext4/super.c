@@ -432,19 +432,19 @@ static void ext4_send_hal_msg(struct super_block *sb, int action)
 	case VOL_REMOUNT_READ_ONLY:
 		hal_event.arg.action = VOL_REMOUNT_READ_ONLY;
 		break;
-	case VOL_LAZY_INIT_START:
+/*	case VOL_LAZY_INIT_START:
 		hal_event.arg.action = VOL_LAZY_INIT_START;
 		break;
 	case VOL_LAZY_INIT_END:
 		hal_event.arg.action = VOL_LAZY_INIT_END;
-		break;
+		break; */
 	default:
 		pr_err("%s: unknown hal event action: %d\n", __func__, action);
 		return;
 	}
 
 	hal_event.type = HAL_EVENT_VOLUME;
-	strlcpy(hal_event.arg.param.vol_message.device_name,
+	strlcpy(hal_event.arg.param.vol_remount_read_only.mount_path,
 		sb->s_id, sizeof(sb->s_id));
 	send_hal_netlink(&hal_event);
 }
@@ -3212,12 +3212,12 @@ static int ext4_run_li_request(struct ext4_li_request *elr)
 	sb_start_write(sb);
 
 	if (elr->lr_next_group == elr->lr_first_group) {
-#ifdef QNAP_HAL
+/*#ifdef QNAP_HAL
 		if (!(sbi->s_mount_flags & EXT4_MF_LAZY_INIT_STARTED)) {
 			ext4_send_hal_msg(sb, VOL_LAZY_INIT_START);
 			sbi->s_mount_flags |= EXT4_MF_LAZY_INIT_STARTED;
 		}
-#endif
+#endif */
 		pr_info("EXT4-fs (device %s): ext4lazyinit start (start from %u, total %u)\n",
 			sb->s_id, elr->lr_first_group,
 			ngroups - elr->lr_first_group);
@@ -3259,9 +3259,9 @@ static int ext4_run_li_request(struct ext4_li_request *elr)
 			status = 1;
 		sbi->lazyinit_status = status;
 	} else {
-#ifdef QNAP_HAL
+/*#ifdef QNAP_HAL
 		ext4_send_hal_msg(sb, VOL_LAZY_INIT_END);
-#endif
+#endif */
 		pr_info("EXT4-fs (device %s): ext4lazyinit finish\n",
 			sb->s_id);
 	}

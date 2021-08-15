@@ -58,7 +58,7 @@
 
 /* Patched by QNAP to support Fnotify */
 #include <linux/fnotify.h>
-#ifdef CONFIG_QND_FNOTIFY_MODULE
+
 uint32_t qnap_g_file_notify_mask = 0;
 EXPORT_SYMBOL(qnap_g_file_notify_mask);
 
@@ -76,7 +76,7 @@ void (*qnap_sys_files_notify)(int idcode,
 	const char *pstname2, int cbname2,
 	T_INODE_INFO *i_info_old, T_INODE_INFO *i_info_new) = NULL;
 EXPORT_SYMBOL(qnap_sys_files_notify);
-#endif
+
 
 /* [Feb-1997 T. Schoebel-Theuer]
  * Fundamental changes in the pathname lookup mechanisms (namei)

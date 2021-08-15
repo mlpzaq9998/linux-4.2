@@ -15,7 +15,7 @@ typedef struct _T_INODE_INFO_ {
 	uint32_t			i_padding;
 } T_INODE_INFO;
 
-#ifdef CONFIG_QND_FNOTIFY_MODULE
+
 #define	FN_CHMOD		0x00000001
 #define	FN_CHOWN		0x00000002
 #define	FN_MKDIR		0x00000004
@@ -84,4 +84,4 @@ extern void (*qnap_nfs_files_notify)(int idcode,
 #else
 #define QNAP_FN_GET_INODE_INFO(inode, i_info)
 #endif /* if define CONFIG_QND_FNOTIFY_MODULE */
-#endif
+

@@ -1865,18 +1865,6 @@ static int xhci_configure_endpoint_result(struct xhci_hcd *xhci,
 		ret = -ETIME;
 		break;
 	case COMP_ENOMEM:
-#if defined(CONFIG_MACH_QNAPTS)
-        //Jira#HWRQF830-60
-        if (udev->parent && (udev->parent->descriptor.idVendor == 0x1c04) &&
-           (udev->parent->descriptor.bDeviceClass == USB_CLASS_HUB) && (udev->parent->speed >= USB_SPEED_SUPER))
-        {
-            NETLINK_EVT hal_event;
-            memset(&hal_event, 0, sizeof(NETLINK_EVT));
-            hal_event.type = HAL_EVENT_ENCLOSURE;
-            hal_event.arg.action = TL_USB_ENDPOINT;
-            send_hal_netlink(&hal_event);
-        }
-#endif
 		dev_warn(&udev->dev,
 			 "Not enough host controller resources for new device state.\n");
 		ret = -ENOMEM;
@@ -3744,11 +3732,6 @@ int xhci_alloc_dev(struct usb_hcd *hcd, struct usb_device *udev)
 					readl(&xhci->cap_regs->hcs_params1)));
 		kfree(command);
 
-		NETLINK_EVT hal_event;
-		memset(&hal_event, 0, sizeof(NETLINK_EVT));
-		hal_event.type = HAL_EVENT_ENCLOSURE;
-		hal_event.arg.action = TL_USB_ENDPOINT;
-		send_hal_netlink(&hal_event);
 
 		return 0;
 	}
