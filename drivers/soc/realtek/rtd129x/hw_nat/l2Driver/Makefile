@@ -17,15 +17,15 @@ endif
 
 	ifdef CONFIG_RTL_LAYERED_DRIVER_L2
 		obj-y := rtl865x_fdb.o
-		ifdef CONFIG_RTL_HW_QOS_SUPPORT
-			obj-y += rtl865x_outputQueue.o
-		endif
+		#ifdef CONFIG_RTL_HW_QOS_SUPPORT
+			#obj-y += rtl865x_outputQueue.o
+		#endif
 	endif
 
-ifeq ($(CONFIG_OPENWRT_SDK),y)
-else
-	obj-y += rtl865x_hw_qos_config.o
-endif
+#ifeq ($(CONFIG_OPENWRT_SDK),y)
+#else
+#	obj-y += rtl865x_hw_qos_config.o
+#endif
 
 ifeq ($(CONFIG_RTL_STP),y)
 	obj-y += rtl865x_stp.o

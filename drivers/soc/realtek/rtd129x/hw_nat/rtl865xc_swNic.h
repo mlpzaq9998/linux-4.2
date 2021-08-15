@@ -321,29 +321,6 @@
 
 typedef struct {
 	uint16 vid;
-	uint16 pid;
-	uint16 len;
-	uint16 priority:3;
-	uint16 rxPri:3;
-	void *input;
-	struct dev_priv *priv;
-	uint32 isPdev;
-#if 0				/* defined(CONFIG_RTL_STP) */
-	int8 isStpVirtualDev;
-#endif
-
-#ifdef CONFIG_RTL_VLAN_8021Q
-	uint16 srcvid;
-#endif
-
-#if defined(CONFIG_RTL_CUSTOM_PASSTHRU) && defined(CONFIG_IPV6)
-	struct dev_priv *oriPriv;
-#endif
-
-} rtl_nicRx_info;
-
-typedef struct {
-	uint16 vid;
 	uint16 portlist;
 	uint16 srcExtPort;
 	uint16 flags;
@@ -495,6 +472,7 @@ extern unsigned char *alloc_rx_buf(void **skb, int buflen);
 extern unsigned char *alloc_rx_buf_init(void **skb, int buflen);
 
 #if defined(CONFIG_RTD_1295_HWNAT)
+#include "linux/netdevice.h"
 static inline void free_rx_buf(void *skb)
 {
 	dev_kfree_skb_any((struct sk_buff *)skb);

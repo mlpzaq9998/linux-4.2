@@ -1557,7 +1557,7 @@ int32 rtl8198C_addAsicArpV6(uint32 index, rtl8198C_tblAsicDrv_arpV6Param_t *arpp
 
 	if(found == TRUE )
 	{
-		if(rtl8198C_setAsicArpV6(rowIdx<<2|colIdx,arpp)==SUCCESS);
+		if(rtl8198C_setAsicArpV6(rowIdx<<2|colIdx,arpp)==SUCCESS)
 			return SUCCESS;
 	}
 

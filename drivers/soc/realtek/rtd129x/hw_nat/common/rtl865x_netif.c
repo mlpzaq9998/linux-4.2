@@ -4800,7 +4800,8 @@ int  rtl865x_add_pattern_acl_for_contentFilter(rtl865x_AclRule_t *rule,char *net
 
 	if(rule == NULL)
 		return FAILED;
-
+    else
+    {
 		rtl865x_add_acl(rule, netifName, RTL865X_ACL_SYSTEM_USED);
 		netif = _rtl865x_getNetifByName(netifName);
 		if(netif == NULL)
@@ -4823,6 +4824,7 @@ int  rtl865x_add_pattern_acl_for_contentFilter(rtl865x_AclRule_t *rule,char *net
 		}
 
 		return SUCCESS;
+    }
 }
 
 int  rtl865x_del_pattern_acl_for_contentFilter(rtl865x_AclRule_t *rule,char *netifName)

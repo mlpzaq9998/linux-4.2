@@ -230,7 +230,7 @@ static uint8 hwnat_gpio_link_led_enable;	/* 0:disable, 1:enable */
 static uint8 hwnat_gpio_link_led;
 
 unsigned int RTL_LANPORT_MASK = RTL_DEF_LANPORT_MASK;
-/* #define RTL_SWNAT	1 */
+#define RTL_SWNAT	1
 #if defined(RTL_SWNAT)
 bool rtl_hwnat_enable = false;
 
@@ -245,6 +245,38 @@ void ntohl_array(u32 *org_buf, u32 *dst_buf, unsigned int words)
 		i++;
 	}
 
+}
+
+int rtl819x_retore_hw_ip(void) {
+	return SUCCESS;
+}
+
+int get_dev_ip_mask(const char *name, unsigned int *ip, unsigned int *mask)
+{
+	struct in_device *in_dev;
+	struct net_device *landev;
+	struct in_ifaddr *ifap = NULL;
+
+	if ((name == NULL) || (ip == NULL) || (mask == NULL)) {
+		return -1;
+	}
+
+	if ((landev = __dev_get_by_name(&init_net, name)) != NULL) {
+		in_dev = (struct in_device *)(landev->ip_ptr);
+		if (in_dev != NULL) {
+			for (ifap = in_dev->ifa_list; ifap != NULL;
+				ifap = ifap->ifa_next) {
+				if (strcmp(name, ifap->ifa_label) == 0) {
+					*ip = ifap->ifa_address;
+					*mask = ifap->ifa_mask;
+					return 0;
+				}
+			}
+
+		}
+	}
+
+	return -1;
 }
 #else /* defined(RTL_SWNAT) */
 extern bool rtl_hwnat_enable;
@@ -8980,6 +9012,7 @@ static void power_save_timer(unsigned long task_priv)
 #endif
 
 #if defined(CONFIG_RTD_1295_HWNAT)
+extern int32 rtl8651_setAsicEthernetPHYPowerDown( uint32 port, uint32 pwrDown );
 int32 rtd129x_set_phy_power_down(uint32 port, uint32 pwr_down)
 {
 	switch (port) {
@@ -10758,6 +10791,10 @@ static int rtl_insert_vlan_tag(struct sk_buff **skb, unsigned int vid,
 }
 #endif
 #define	RTL_NIC_TX_RETRY_MAX		(128)
+
+extern int32 _New_swNic_send(void *skb, void *output, uint32 len,
+	rtl_nicTx_info *nicTx);
+
 __MIPS16 __IRAM_FWD
 	static int re865x_start_xmit(struct sk_buff *skb,
 	struct net_device *dev)
@@ -15259,6 +15296,8 @@ static int rtd129x_nat_suspend(struct device *dev)
 
 	return 0;
 }
+
+extern int rtl865x_reinitSwitchCore(void);
 
 static int rtd129x_nat_resume(struct device *dev)
 {

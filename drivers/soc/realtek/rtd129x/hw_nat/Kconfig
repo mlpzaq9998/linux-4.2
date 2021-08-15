@@ -533,7 +533,7 @@ config RTL_836X_SUPPORT
 
 config RTL_VLAN_8021Q
 	bool "Make linux vlan support RTK router"
-	default y
+	default n
 	depends on VLAN_8021Q
 	help
 	  Select this to make linux vlan support RTK router.
