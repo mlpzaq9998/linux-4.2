@@ -9,7 +9,7 @@
 /memreserve/ ACPU_IDMEM_PHYS            ACPU_IDMEM_SIZE             ; /* 0x10000000 ~ 0x10013fff */
 /memreserve/ ACPU_BOOTCODE_PHYS         ACPU_BOOTCODE_SIZE          ; /* 0x10000000 ~ 0x10013fff */
 
-#include "rtd-1295.dtsi"
+#include "rtd-qnap-1295.dtsi"
 #include "rtd-129x-dvfs.dtsi"
 
 / {
@@ -44,11 +44,12 @@
 
 	rtk_misc_gpio: rtk_misc_gpio@9801b100 {
 		//gpios = <&rtk_misc_gpio 8 0 0>;
+		gpios = <&rtk_misc_gpio 11 1 1>,  <&rtk_misc_gpio 12 1 1>,  <&rtk_misc_gpio 8 0 0>,  <&rtk_misc_gpio 100 1 1>;
 		/* install button, input, default N/A */
 	};
 
 	rtk_iso_gpio: rtk_iso_gpio@98007100 {
-		//gpios = <&rtk_iso_gpio 21 1 0>;
+		//gpios = <&rtk_iso_gpio 5 1 0>;
 		/* igpio21, output, default low */
 	};
 
@@ -94,7 +95,7 @@
 		bus-range = <0x00 0xff>;
 		linux,pci-domain = <0>;
 		device_type = "pci";
-		gpios = <&rtk_misc_gpio 18 1 1 >;
+		gpios = <&rtk_misc_gpio 18 1 1 >,  <&rtk_misc_gpio 20 1 1>;
 		#size-cells = <2>;
 		#address-cells = <3>;
 		num-lanes = <1>;
@@ -192,8 +193,38 @@
 		wakeup-gpio-enable = /* (0) disable (1) enable */
 			<1>; /* Wakeup from CPU_WAKE : enable */
 		wakeup-gpio-list = /* <&rtk_iso_gpio {num} {force input (0) } {default N/A (0)] }> */
-			<&rtk_iso_gpio 23 0 0>; /* CPU_WAKE wakeup host pin */
+			<&rtk_iso_gpio 14 0 0>, <&rtk_iso_gpio 4 0 0>, <&rtk_iso_gpio 33 0 0>; /* CPU_WAKE wakeup host pin */
 		wakeup-gpio-activity = /* (0) active low (1) active high*/
 			<1>; /* CPU_WAKE : high activity */
 	};
-};
+
+	spi@9801BD00 {
+		compatible = "Realtek,rtk129x-spi";
+		reg = < 0x9801bd00 0x32 >;
+		pinctrl-names = "default";
+		pinctrl-0 = < 0x46 >;
+		spi-cs-gpio = <&rtk_misc_gpio 6 1 1 >;
+		status = "disabled";
+	};
+
+	spi-lcd {
+		compatible = "grtek,spi-lcd";
+	};
+
+	gpio-keys-polled {
+		compatible = "gpio-keys-polled";
+		poll-interval = < 0x14 >;
+		autorepeat;
+
+		0x198 {
+			label = "KEY_RESTART";
+			gpios = <&rtk_iso_gpio 5 0 1 >;
+			linux,code = < 0x198 >;
+		};
+
+		0x100 {
+			label = "BTN_0";
+			gpios = <&rtk_iso_gpio 4 0 1 >;
+			linux,code = < 0x74 >;
+		};
+	};};

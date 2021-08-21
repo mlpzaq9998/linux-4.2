@@ -133,7 +133,9 @@
 				<&spi_pins_loc_gpio>, /* <&spi_pins_loc_gpio>: GPIO0~3 mux to gpio; <&spi_pins_loc_spi>: GPIO0~3 mux to SPI*/
 				//<&pwm1_pins>,
 				//<&dc_fan_sensor_pins>,
+				<&nat_led_pins>,
 				<&etn_led_pins>;
+
 	};
 
 	mux_intc: intc@9801B000 {
@@ -212,7 +214,7 @@
                 offload_enable = <1>; /* 0:disable, 1:enable HW NAT offload */
                 rgmii_voltage = <1>; /* 1:1.8V, 2: 2.5V, 3:3.3V */
                 rgmii_enable = <1>; /* 0:disable, 1:enable */
-                mac0_enable = <0>; /* 0:disable, 1:enable */
+                mac0_enable = <1>; /* 0:disable, 1:enable */
                 mac0_mode = <1>; /* 0:RGMII, 1:SGMII */
                 mac5_conn_to = <0>; /* 0:PHY, 1:MAC */
                 mac0_phy_id = <3>; /* PHY ID 2 for RGMII, 3 for SGMII */
