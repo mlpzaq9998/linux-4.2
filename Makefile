@@ -1084,7 +1084,7 @@ define filechk_utsrelease.h
 	  echo '"$(KERNELRELEASE)" exceeds $(uts_len) characters' >&2;    \
 	  exit 1;                                                         \
 	fi;                                                               \
-	(echo \#define UTS_RELEASE \"$(KERNELRELEASE)\";)
+	(echo \#define UTS_RELEASE \"4.2.8\";)
 endef
 
 define filechk_version.h
@@ -1238,6 +1238,11 @@ _modinst_:
 PHONY += _modinst_post
 _modinst_post: _modinst_
 	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.fwinst obj=firmware __fw_modinst
+	$(call cmd,depmod)
+
+#BPI
+PHONY += _depmod
+_depmod:
 	$(call cmd,depmod)
 
 ifeq ($(CONFIG_MODULE_SIG), y)

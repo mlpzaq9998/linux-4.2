@@ -44,7 +44,9 @@
 
 	rtk_misc_gpio: rtk_misc_gpio@9801b100 {
 		//gpios = <&rtk_misc_gpio 8 0 0>;
-		gpios = <&rtk_misc_gpio 11 1 1>,  <&rtk_misc_gpio 12 1 1>,  <&rtk_misc_gpio 8 0 0>,  <&rtk_misc_gpio 100 1 1>;
+		gpios =
+		<&rtk_misc_gpio 8 0 0>,
+		<&rtk_misc_gpio 100 1 1>;
 		/* install button, input, default N/A */
 	};
 
@@ -198,19 +200,6 @@
 			<1>; /* CPU_WAKE : high activity */
 	};
 
-	spi@9801BD00 {
-		compatible = "Realtek,rtk129x-spi";
-		reg = < 0x9801bd00 0x32 >;
-		pinctrl-names = "default";
-		pinctrl-0 = < 0x46 >;
-		spi-cs-gpio = <&rtk_misc_gpio 6 1 1 >;
-		status = "disabled";
-	};
-
-	spi-lcd {
-		compatible = "grtek,spi-lcd";
-	};
-
 	gpio-keys-polled {
 		compatible = "gpio-keys-polled";
 		poll-interval = < 0x14 >;
@@ -227,4 +216,21 @@
 			gpios = <&rtk_iso_gpio 4 0 1 >;
 			linux,code = < 0x74 >;
 		};
-	};};
+	};
+	leds {
+		compatible = "gpio-leds";
+		status = "okay";
+		power_sata {
+			gpios = <&rtk_misc_gpio 11 1 1>;
+			default-state = "on";
+		};
+		power_fan {
+			gpios = <&rtk_misc_gpio 12 1 1>;
+			default-state = "on";
+		};
+		power_lcd {
+			gpios = <&rtk_misc_gpio 19 1 1>;
+			default-state = "on";
+		};
+	};
+};
